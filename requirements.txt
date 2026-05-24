@@ -1,0 +1,41 @@
+# 2D 游戏素材生成工具 - 依赖清单
+# Core Dependencies
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic==2.5.0
+gradio==4.11.0
+requests==2.31.0
+
+# 图像生成核心
+diffusers==0.24.0
+transformers==4.35.0
+torch>=2.0.0  # 需要手动安装对应CUDA版本
+torchvision>=0.15.0
+
+# LoRA 和模型加载
+peft==0.7.0
+safetensors==0.4.1
+
+# 图像处理
+Pillow>=10.0.0
+opencv-python==4.8.0
+numpy>=1.24.0
+
+# 背景移除
+rembg>=2.0.50
+# 如果需要 SAM (Segment Anything)：
+# segment-anything>=1.0
+
+# 加速库（可选但推荐）
+xformers>=0.0.23  # 内存优化注意力
+# streamdiffusion>=0.1.0  # 流式推理加速（可选）
+
+# 工具类
+python-dotenv==1.0.0
+pyyaml==6.0.1
+tqdm>=4.66.0
+
+# 开发工具（可选）
+black>=23.0.0
+flake8>=6.1.0
+pytest>=7.4.0
