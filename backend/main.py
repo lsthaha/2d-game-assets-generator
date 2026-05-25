@@ -19,9 +19,9 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from config import OUTPUT_DIR, API_CONFIG, MODEL_CONFIG, PROMPT_TEMPLATES
-from backend.models.schemas import GenerationRequest, GenerationResponse, TaskStatus
-from backend.generators.sd_generator import create_generator
-from backend.generators.background_remover import BackgroundRemover
+from .models.schemas import GenerationRequest, GenerationResponse, TaskStatus
+from .generators.sd_generator import create_generator
+from .generators.background_remover import BackgroundRemover
 
 # 配置日志
 logging.basicConfig(
