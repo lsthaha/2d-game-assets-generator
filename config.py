@@ -4,6 +4,23 @@
 import os
 from pathlib import Path
 
+try:
+    import torch
+    _TORCH_AVAILABLE = True
+except ImportError:
+    _TORCH_AVAILABLE = False
+
+
+def _detect_device() -> str:
+    if _TORCH_AVAILABLE and torch.cuda.is_available():
+        return "cuda"
+    return "cpu"
+
+
+def _detect_dtype(device: str) -> str:
+    return "float16" if device == "cuda" else "float32"
+
+
 # 项目根目录
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -15,14 +32,17 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 CACHE_DIR = BASE_DIR / "cache"
 CACHE_DIR.mkdir(exist_ok=True)
 
-# 模型配置 (Intel Mac - CPU优化模式)
+# 模型配置 (GPU/CPU 自动检测)
+DEFAULT_DEVICE = _detect_device()
+DEFAULT_DTYPE = _detect_dtype(DEFAULT_DEVICE)
+
 MODEL_CONFIG = {
     "base_model": "runwayml/stable-diffusion-v1-5",
-    "lcm_lora": "latent-consistency/lcm-lora-sdv1-5",  # LCM 加速,CPU也能2-3分钟生成
-    "device": "cpu",  # Intel Mac使用CPU (AMD GPU不支持PyTorch)
-    "dtype": "float32",  # CPU模式使用float32
-    "enable_attention_slicing": True,  # CPU内存优化
-    "enable_memory_efficient_attention": False,  # CPU不需要
+    "lcm_lora": "latent-consistency/lcm-lora-sdv1-5",
+    "device": DEFAULT_DEVICE,
+    "dtype": DEFAULT_DTYPE,
+    "enable_attention_slicing": True,
+    "enable_memory_efficient_attention": DEFAULT_DEVICE == "cuda",
     "background_removal_method": "rembg",
 }
 
