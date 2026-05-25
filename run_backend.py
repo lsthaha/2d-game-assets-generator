@@ -17,12 +17,16 @@ print(f"✓ 启动后端服务...\n")
 
 # 直接导入并运行
 if __name__ == "__main__":
-    # 导入配置和应用
+    # 导入配置
     from config import API_CONFIG
+    
+    # 导入 FastAPI app
     from backend.main import app
+    
+    # 导入 uvicorn
     import uvicorn
     
-    # 启动服务
+    # 运行服务
     uvicorn.run(
         app,
         host=API_CONFIG.get("host", "0.0.0.0"),
