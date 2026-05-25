@@ -11,6 +11,10 @@ BASE_DIR = Path(__file__).resolve().parent
 OUTPUT_DIR = BASE_DIR / "output"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
+# 缓存目录
+CACHE_DIR = BASE_DIR / "cache"
+CACHE_DIR.mkdir(exist_ok=True)
+
 # 模型配置
 MODEL_CONFIG = {
     "base_model": "runwayml/stable-diffusion-v1-5",  # 或 stabilityai/stable-diffusion-xl-base-1.0
@@ -92,3 +96,53 @@ PROMPT_TEMPLATES = {
 LOG_LEVEL = "INFO"
 LOG_FILE = BASE_DIR / "logs" / "app.log"
 LOG_FILE.parent.mkdir(exist_ok=True)
+
+# ==================== 七牛云企业级配置 ====================
+
+# 七牛云Kodo配置
+QINIU_CONFIG = {
+    "enabled": False,  # 是否启用七牛云集成
+    "access_key": os.getenv("QINIU_ACCESS_KEY", ""),  # 从环境变量读取
+    "secret_key": os.getenv("QINIU_SECRET_KEY", ""),
+    "bucket_name": os.getenv("QINIU_BUCKET", "game-assets-prod"),
+    "cdn_domain": os.getenv("QINIU_CDN_DOMAIN", "assets.yourgame.com"),
+    "region": os.getenv("QINIU_REGION", "z0"),  # z0=华东, z1=华北, z2=华南
+    "use_https": True,
+    "private_access": True,  # 是否使用私有访问
+}
+
+# 风格缓存配置
+STYLE_CACHE_CONFIG = {
+    "enabled": True,  # 是否启用风格缓存
+    "cache_dir": CACHE_DIR / "styles",
+    "default_ttl_days": 30,  # 默认缓存有效期(天)
+    "max_cache_size_mb": 5000,  # 最大缓存大小(MB)
+    "sync_to_kodo": False,  # 是否自动同步到Kodo (需启用QINIU_CONFIG)
+    "prefetch_enabled": False,  # 是否启用预取
+}
+
+# 项目管理配置
+PROJECT_CONFIG = {
+    "default_project_name": "Default Project",
+    "metadata_format": "json",  # json 或 yaml
+    "auto_backup": True,  # 是否自动备份配置
+}
+
+# CDN缓存策略
+CDN_CACHE_STRATEGY = {
+    "asset_images": {
+        "pattern": "*.png,*.jpg",
+        "ttl_days": 30,
+        "refresh": "url"  # url 或 directory
+    },
+    "metadata": {
+        "pattern": "*.json",
+        "ttl_days": 1,
+        "refresh": "directory"
+    },
+    "style_templates": {
+        "pattern": "/styles/**",
+        "ttl_days": 7,
+        "prefetch": True
+    }
+}
