@@ -15,15 +15,15 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 CACHE_DIR = BASE_DIR / "cache"
 CACHE_DIR.mkdir(exist_ok=True)
 
-# 模型配置
+# 模型配置 (Intel Mac - CPU优化模式)
 MODEL_CONFIG = {
-    "base_model": "runwayml/stable-diffusion-v1-5",  # 或 stabilityai/stable-diffusion-xl-base-1.0
-    "lcm_lora": "latent-consistency/lcm-lora-sdv1-5",  # LCM LoRA 用于加速
-    "device": "cpu",  # cuda 或 cpu
-    "dtype": "float32",  # float16 或 float32
-    "enable_attention_slicing": False,  # CPU模式不需要
-    "enable_memory_efficient_attention": False,  # CPU模式不需要
-    "background_removal_method": "rembg",  # 保持不变
+    "base_model": "runwayml/stable-diffusion-v1-5",
+    "lcm_lora": "latent-consistency/lcm-lora-sdv1-5",  # LCM 加速,CPU也能2-3分钟生成
+    "device": "cpu",  # Intel Mac使用CPU (AMD GPU不支持PyTorch)
+    "dtype": "float32",  # CPU模式使用float32
+    "enable_attention_slicing": True,  # CPU内存优化
+    "enable_memory_efficient_attention": False,  # CPU不需要
+    "background_removal_method": "rembg",
 }
 
 # 生成参数预设
@@ -32,7 +32,7 @@ GENERATION_PRESETS = {
         "width": 512,
         "height": 512,
         "guidance_scale": 7.5,
-        "num_inference_steps": 8,  # LCM 使用较少步数
+        "num_inference_steps": 4,  # LCM使用4步 (CPU约2-3分钟,GPU约2-3秒)
         "style_lora": None,
     },
     "character_sprite_4way": {
