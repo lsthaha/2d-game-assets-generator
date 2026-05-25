@@ -37,6 +37,7 @@ class SDGenerator:
         self.dtype = torch.float16 if dtype == "float16" else torch.float32
         self.pipeline = None
         self.is_ready = False
+        self.last_seed = None
         self._init_pipeline()
 
     def _init_pipeline(self):
@@ -113,11 +114,12 @@ class SDGenerator:
             if seed is None:
                 seed = int(torch.randint(0, 2**32 - 1, (1,)).item())
             
+            self.last_seed = seed
             generator = torch.Generator(device=self.device)
             generator.manual_seed(seed)
-            
+
             logger.info(f"生成图像: {prompt[:50]}... (seed: {seed})")
-            
+
             # 生成图像
             with torch.no_grad():
                 output = self.pipeline(

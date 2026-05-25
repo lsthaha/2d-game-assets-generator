@@ -3,6 +3,9 @@ Gradio 前端应用 - 2D 游戏素材生成工具用户界面
 MVP v0.2 - 改进版本，包含快速/高级模式、历史记录、种子锁定等功能
 """
 import logging
+import os
+import re
+import sys
 from pathlib import Path
 import requests
 import json
@@ -164,7 +167,9 @@ def generate_asset(
             try:
                 image = Image.open(image_path)
                 task_id = result.get("task_id", "unknown")
-                used_seed = result.get("seed", seed)
+                used_seed = result.get("seed") if result.get("seed") is not None else seed
+                if used_seed is None:
+                    used_seed = "随机"
                 message = f"""✅ 生成成功！
 ━━━━━━━━━━━━━━━━━
 📌 任务ID: {task_id}
@@ -370,14 +375,15 @@ def create_interface():
                 )
                 
                 def lock_seed(info_text):
-                    if "使用种子:" in info_text:
-                        try:
-                            seed_line = [line for line in info_text.split("\n") if "使用种子:" in line][0]
-                            seed_value = int(seed_line.split(": ")[1])
-                            return seed_value, f"✅ 已锁定种子: {seed_value}\n点击「生成素材」将复用此种子"
-                        except:
-                            return None, "❌ 无法提取种子值"
-                    return None, "❌ 请先生成一张素材"
+                    if not info_text:
+                        return None, "❌ 请先生成一张素材"
+
+                    seed_match = re.search(r"使用种子[:：]\s*(\d+)", info_text)
+                    if seed_match:
+                        seed_value = int(seed_match.group(1))
+                        return seed_value, f"✅ 已锁定种子: {seed_value}\n点击「生成素材」将复用此种子"
+
+                    return None, "❌ 无法提取种子值"
                 
                 lock_seed_btn_quick.click(
                     fn=lock_seed,
@@ -758,9 +764,12 @@ if __name__ == "__main__":
     logger.info("启动 Gradio 前端应用 v0.2...")
     
     demo = create_interface()
+    share = os.environ.get("GRADIO_SHARE", "false").lower() in ("1", "true", "yes")
+    if "google.colab" in sys.modules or os.environ.get("COLAB_GPU") or os.environ.get("COLAB_TPU_ADDR"):
+        share = True
     demo.launch(
-        server_name="127.0.0.1",
+        server_name="0.0.0.0" if share else "127.0.0.1",
         server_port=7861,
-        share=False,
+        share=share,
         show_error=True,
     )
