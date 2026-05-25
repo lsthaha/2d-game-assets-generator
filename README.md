@@ -467,18 +467,74 @@ A: 点击「📥 下载 PNG」保存，或「📋 导出元数据」保存生成
 
 ---
 
+## 📦 依赖声明
+
+### 第三方开源库
+本项目使用了以下开源库和框架:
+
+#### AI 模型
+- **Stable Diffusion v1.5** - Hugging Face (CreativeML Open RAIL-M License)
+  - 用途: 核心图像生成模型
+  - 来源: `runwayml/stable-diffusion-v1-5`
+
+- **LCM LoRA** - Latent Consistency Models (Apache 2.0 License)
+  - 用途: 推理加速,将生成时间从20-30s降至2-8s
+  - 来源: `latent-consistency/lcm-lora-sdv1-5`
+
+#### 后端框架
+- **FastAPI** (MIT License) - 现代化 Web 框架
+- **Uvicorn** (BSD License) - ASGI 服务器
+- **PyTorch** (BSD License) - 深度学习框架
+- **Diffusers** (Apache 2.0) - Hugging Face 扩散模型库
+- **Transformers** (Apache 2.0) - NLP 模型库
+- **Rembg** (MIT License) - 自动背景移除
+
+#### 前端框架
+- **Gradio** (Apache 2.0) - 机器学习 Web UI 框架
+- **Pillow** (HPND License) - 图像处理库
+
+### 原创功能部分
+以下功能为本项目原创设计和实现:
+
+1. **后端架构**
+   - FastAPI 后端服务架构设计
+   - LCM 加速集成方案和参数优化
+   - 自动抠图工作流设计
+   - 多素材类型和风格预设系统
+   - 异步任务管理机制
+
+2. **前端界面**
+   - Gradio 双模式界面设计(快速/高级模式)
+   - 动态提示词建议系统
+   - 种子锁定和风格复现机制
+   - 游戏引擎集成指南
+   - 参数配置面板和交互逻辑
+
+3. **业务逻辑**
+   - 素材类型自动尺寸适配
+   - 风格预设和提示词模板
+   - 元数据导出和管理
+   - 完整的配置管理系统
+
+4. **文档和工具**
+   - 完整的中文文档和使用指南
+   - 自动化启动脚本(run.bat/run.sh)
+   - 环境检查和测试脚本
+   - PR 规范和提交计划
+
+### 许可证兼容性
+所有使用的第三方库均为开源许可证,与本项目的 MIT License 兼容。生成的素材请遵守 Stable Diffusion 模型许可证(CreativeML Open RAIL-M)。
+
+---
+
 ## 📄 许可证
 
-本项目采用 MIT License。生成的素材请遵守 Stable Diffusion 模型许可证。
+MIT License - 自由使用和修改
 
 **版本**: MVP v0.2  
 **模型**: SD 1.5 + LCM LoRA  
 **框架**: FastAPI + Gradio 4.0+  
-**更新时间**: 2026-05-24  
-A: 使用相同的 `seed` 值，或等待 Phase 2 的 LoRA 和 IP-Adapter
-
-**Q: 支持实时预览吗？**  
-A: 现在不支持，但可以快速迭代 (每 2-5 秒一张)
+**最后更新**: 2026-05-25
 
 ---
 
@@ -488,29 +544,19 @@ A: 现在不支持，但可以快速迭代 (每 2-5 秒一张)
 
 ### 开发环境
 ```bash
-pip install -e ".[dev]"
-black . && flake8 . && pytest
+pip install -r requirements.txt
+# 运行测试
+python test_setup.py
 ```
 
 ---
 
-## 📄 许可证
-
-MIT License - 自由使用和修改
-
----
-
-## 👨‍💻 开发团队
+## 👨‍💻 项目信息
 
 **项目**: 2D 游戏素材生成工具  
-**版本**: 0.1.0 MVP  
-**最后更新**: 2024
-
----
-
-## 📧 联系方式
-
-如有问题或建议，欢迎联系我们！
+**版本**: 0.2.0 MVP  
+**仓库**: https://github.com/lsthaha/2d-game-assets-generator  
+**最后更新**: 2026-05-25
 
 ---
 
