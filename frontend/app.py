@@ -3,6 +3,8 @@ Gradio 前端应用 - 2D 游戏素材生成工具用户界面
 MVP v0.2 - 改进版本，包含快速/高级模式、历史记录、种子锁定等功能
 """
 import logging
+import os
+import sys
 from pathlib import Path
 import requests
 import json
@@ -758,9 +760,12 @@ if __name__ == "__main__":
     logger.info("启动 Gradio 前端应用 v0.2...")
     
     demo = create_interface()
+    share = os.environ.get("GRADIO_SHARE", "false").lower() in ("1", "true", "yes")
+    if "google.colab" in sys.modules or os.environ.get("COLAB_GPU") or os.environ.get("COLAB_TPU_ADDR"):
+        share = True
     demo.launch(
-        server_name="127.0.0.1",
+        server_name="0.0.0.0" if share else "127.0.0.1",
         server_port=7861,
-        share=False,
+        share=share,
         show_error=True,
     )
