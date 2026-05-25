@@ -4,7 +4,6 @@
 确保正确的 Python 路径设置
 """
 import sys
-import runpy
 from pathlib import Path
 
 # 确保项目根目录在 Python 路径中
@@ -16,6 +15,17 @@ print(f"✓ 项目根目录: {project_root}")
 print(f"✓ Python 路径已配置")
 print(f"✓ 启动后端服务...\n")
 
-# 以模块方式运行 backend.main
+# 直接导入并运行
 if __name__ == "__main__":
-    runpy.run_module('backend.main', run_name='__main__')
+    # 导入配置和应用
+    from config import API_CONFIG
+    from backend.main import app
+    import uvicorn
+    
+    # 启动服务
+    uvicorn.run(
+        app,
+        host=API_CONFIG.get("host", "0.0.0.0"),
+        port=API_CONFIG.get("port", 8001),
+        log_level="info"
+    )
