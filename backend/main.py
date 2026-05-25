@@ -150,6 +150,7 @@ async def generate_asset(
             seed=request.seed,
             output_path=output_path,
         )
+        actual_seed = getattr(app_state.generator, "last_seed", request.seed)
         
         # 抠图处理
         final_image_path = output_path
@@ -173,7 +174,7 @@ async def generate_asset(
             "height": request.height,
             "guidance_scale": request.guidance_scale,
             "num_inference_steps": request.num_inference_steps,
-            "seed": request.seed,
+            "seed": actual_seed,
             "remove_background": request.remove_background,
         }
         with open(metadata_path, "w", encoding="utf-8") as f:
@@ -186,11 +187,12 @@ async def generate_asset(
             status="success",
             task_id=task_id,
             image_paths=[str(final_image_path)],
+            seed=actual_seed,
             metadata={
                 "prompt": full_prompt,
                 "style": request.style,
                 "asset_type": request.asset_type,
-                "seed": request.seed,
+                "seed": actual_seed,
             }
         )
         
